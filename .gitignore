@@ -1,0 +1,34 @@
+# Node
+node_modules
+
+# Logs
+logs
+*.log
+
+# Runtime
+pids
+*.pid
+
+# dotenv
+.env
+.env.*
+
+# Vite
+dist
+
+# Build
+build
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode
+.idea
+
+# Coverage
+coverage
+
+# Misc
+*.local 
