@@ -4,18 +4,30 @@ import app from "./app.js";
 
 import config from "./core/config/env.js";
 
-const server = http.createServer(app);
+import connectDB from "./core/database/mongodb.js";
 
-server.listen(config.port, () => {
-    console.log(`
-=================================================
+import logger from "./core/logger/logger.js";
 
-🚀 PulseAI Server Started
+const startServer = async () => {
+  await connectDB();
 
-Environment : ${config.nodeEnv}
+  const server = http.createServer(app);
 
-Port        : ${config.port}
+  server.listen(config.port, () => {
+    logger.success(
+      `PulseAI running on port ${config.port} (${config.nodeEnv})`
+    );
+  });
 
-=================================================
-`);
-});
+  process.on("SIGINT", async () => {
+    logger.warn("Gracefully shutting down...");
+
+    server.close(() => {
+      logger.success("Server closed.");
+
+      process.exit(0);
+    });
+  });
+};
+
+startServer();
