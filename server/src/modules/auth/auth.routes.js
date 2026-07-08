@@ -4,6 +4,8 @@ import {
   register,
   login,
   me,
+  logout,
+  refreshToken,
 } from "./auth.controller.js";
 
 import {
@@ -34,6 +36,17 @@ router.post(
   loginValidation,
   validate,
   login
+);
+
+router.post(
+  "/refresh-token",
+  refreshToken
+);
+
+router.post(
+  "/logout",
+  authMiddleware,
+  logout
 );
 
 export default router;

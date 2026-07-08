@@ -105,3 +105,42 @@ export const getCurrentUser = async (userId) => {
     "-password -refreshToken"
   );
 };
+
+import {
+  verifyRefreshToken,
+} from "../../shared/utils/jwt.js";
+
+export const refreshAccessToken = async (
+  refreshToken
+) => {
+  if (!refreshToken) {
+    throw new ApiError(401, "Refresh token missing");
+  }
+
+  const payload =
+    verifyRefreshToken(refreshToken);
+
+  const user = await User.findById(payload._id);
+
+  if (!user) {
+    throw new ApiError(401, "Invalid token");
+  }
+
+  if (user.refreshToken !== refreshToken) {
+    throw new ApiError(401, "Invalid refresh token");
+  }
+
+  const accessToken =
+    generateAccessToken({
+      _id: user._id,
+      email: user.email,
+    });
+
+  return accessToken;
+};
+
+export const logoutUser = async (userId) => {
+  await User.findByIdAndUpdate(userId, {
+    refreshToken: null,
+  });
+};
