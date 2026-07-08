@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 
-import User from "../user/user.model.js";
+import User from "./auth.model.js";
 
 import ApiError from "../../core/errors/ApiError.js";
 
@@ -14,13 +14,10 @@ export const registerUser = async ({
   email,
   password,
 }) => {
-  const existingUser = await User.findOne({ email });
+  const exists = await User.findOne({ email });
 
-  if (existingUser) {
-    throw new ApiError(
-      409,
-      "Email already registered."
-    );
+  if (exists) {
+    throw new ApiError(409, "Email already exists");
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -30,6 +27,50 @@ export const registerUser = async ({
     email,
     password: hashedPassword,
   });
+
+  const payload = {
+    _id: user._id,
+    email: user.email,
+  };
+
+  const accessToken = generateAccessToken(payload);
+
+  const refreshToken = generateRefreshToken(payload);
+
+  user.refreshToken = refreshToken;
+
+  await user.save();
+
+  const userData = user.toObject();
+
+  delete userData.password;
+  delete userData.refreshToken;
+
+  return {
+    user: userData,
+    accessToken,
+    refreshToken,
+  };
+};
+
+export const loginUser = async ({
+  email,
+  password,
+}) => {
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new ApiError(401, "Invalid credentials.");
+  }
+
+  const matched = await bcrypt.compare(
+    password,
+    user.password
+  );
+
+  if (!matched) {
+    throw new ApiError(401, "Invalid credentials.");
+  }
 
   const payload = {
     _id: user._id,
@@ -46,15 +87,21 @@ export const registerUser = async ({
 
   await user.save();
 
-  const userObject = user.toObject();
+  const userData = user.toObject();
 
-  delete userObject.password;
+  delete userData.password;
 
-  delete userObject.refreshToken;
+  delete userData.refreshToken;
 
   return {
-    user: userObject,
+    user: userData,
     accessToken,
     refreshToken,
   };
+};
+
+export const getCurrentUser = async (userId) => {
+  return await User.findById(userId).select(
+    "-password -refreshToken"
+  );
 };
