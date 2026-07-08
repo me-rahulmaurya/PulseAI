@@ -5,10 +5,27 @@ import {
   login,
 } from "./auth.controller.js";
 
+import validate from "../../core/middlewares/validate.middleware.js";
+
+import {
+  registerValidation,
+  loginValidation,
+} from "./auth.validation.js";
+
 const router = Router();
 
-router.post("/register", register);
+router.post(
+  "/register",
+  registerValidation,
+  validate,
+  register
+);
 
-router.post("/login", login);
+router.post(
+  "/login",
+  loginValidation,
+  validate,
+  login
+);
 
 export default router;
