@@ -7,6 +7,7 @@ import config from "./core/config/env.js";
 import connectDB from "./core/database/mongodb.js";
 
 import logger from "./core/logger/logger.js";
+import banner from "./core/config/banner.js";
 
 const startServer = async () => {
   await connectDB();
@@ -30,4 +31,5 @@ const startServer = async () => {
   });
 };
 
+console.log(banner);
 startServer();

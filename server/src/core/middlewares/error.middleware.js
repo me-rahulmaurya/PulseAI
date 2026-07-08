@@ -1,21 +1,22 @@
 import ApiError from "../errors/ApiError.js";
+import { sendError } from "../responses/sendResponse.js";
 
 const errorMiddleware = (err, req, res, next) => {
-  if (err instanceof ApiError) {
-    return res.status(err.statusCode).json({
-      success: false,
-      message: err.message,
-      errors: err.errors,
-    });
-  }
+    if (err instanceof ApiError) {
+        return sendError(
+            res,
+            err.message,
+            err.errors,
+            err.statusCode
+        );
+    }
 
-  console.error(err);
+    console.error(err);
 
-  return res.status(500).json({
-    success: false,
-    message: "Internal Server Error",
-    errors: [],
-  });
+    return sendError(
+        res,
+        "Internal Server Error"
+    );
 };
 
 export default errorMiddleware;

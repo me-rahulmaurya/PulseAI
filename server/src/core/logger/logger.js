@@ -8,13 +8,17 @@ const print = (color, type, message) => {
 };
 
 const logger = {
-  info: (msg) => print("\x1b[36m", "[INFO]", msg),
+    info: (msg) =>
+        print("\x1b[36m", "ℹ INFO", msg),
 
-  success: (msg) => print("\x1b[32m", "[SUCCESS]", msg),
+    success: (msg) =>
+        print("\x1b[32m", "✔ SUCCESS", msg),
 
-  warn: (msg) => print("\x1b[33m", "[WARNING]", msg),
+    warn: (msg) =>
+        print("\x1b[33m", "⚠ WARNING", msg),
 
-  error: (msg) => print("\x1b[31m", "[ERROR]", msg),
+    error: (msg) =>
+        print("\x1b[31m", "✖ ERROR", msg),
 };
 
 export default logger;
