@@ -49,6 +49,31 @@ export const getDashboard = async (userId) => {
         profile.age
     );
 
+    const waterToday = await Water.aggregate([
+  {
+    $match: {
+      user: user._id,
+      consumedAt: {
+        $gte: start,
+        $lte: end,
+      },
+    },
+  },
+  {
+    $group: {
+      _id: null,
+      total: {
+        $sum: "$amount",
+      },
+    },
+  },
+]);
+
+const waterConsumed =
+  waterToday.length > 0
+    ? waterToday[0].total
+    : 0;
+    
     return {
         user,
 
@@ -71,7 +96,7 @@ export const getDashboard = async (userId) => {
 
         today: {
 
-            waterConsumed: 0,
+            waterConsumed,
 
             medicationsPending: 0,
         },
