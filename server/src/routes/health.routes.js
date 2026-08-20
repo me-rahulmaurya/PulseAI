@@ -1,27 +1,22 @@
 import { Router } from "express";
 
+import config from "../core/config/env.js";
+import { sendSuccess } from "../core/responses/sendResponse.js";
+
 const router = Router();
 
-/*
-|--------------------------------------------------------------------------
-| GET /api/v1/health
-|--------------------------------------------------------------------------
-*/
-
 router.get("/", (req, res) => {
-    return res.status(200).json({
-        success: true,
-
-        message: "PulseAI API is healthy.",
-
-        data: {
+    return sendSuccess(
+        res,
+        "PulseAI API is healthy.",
+        {
             uptime: process.uptime(),
 
             timestamp: new Date().toISOString(),
 
-            environment: process.env.NODE_ENV,
-        },
-    });
+            environment: config.nodeEnv,
+        }
+    );
 });
 
 export default router;
