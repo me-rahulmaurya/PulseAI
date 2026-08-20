@@ -1,4 +1,4 @@
-# HealthOS
+# PulseAI
 
 AI-powered Personal Health Operating System.
 
