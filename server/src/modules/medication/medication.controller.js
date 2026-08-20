@@ -12,8 +12,9 @@ import {
 
 } from "./medication.service.js";
 
-export const createMedication =
-asyncHandler(async (req,res)=>{
+export const createMedication = asyncHandler(async (req,res)=>{
+
+    console.log(req.body);
 
     const medicine =
         await addMedication(

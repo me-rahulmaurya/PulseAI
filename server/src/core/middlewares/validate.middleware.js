@@ -5,6 +5,7 @@ const validate = (req, res, next) => {
   const result = validationResult(req);
 
   if (!result.isEmpty()) {
+    console.log(result.array());
     return next(
       new ApiError(
         400,

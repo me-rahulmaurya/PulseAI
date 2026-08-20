@@ -13,8 +13,14 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
     throw new ApiError(401, "Access token missing.");
   }
 
-  const payload = verifyAccessToken(token);
+  let payload;
 
+  try {
+    payload = verifyAccessToken(token);
+  } catch (error) {
+    throw new ApiError(401, "Access token expired or invalid.");
+  }
+  
   const user = await User.findById(payload._id).select(
     "-password -refreshToken"
   );

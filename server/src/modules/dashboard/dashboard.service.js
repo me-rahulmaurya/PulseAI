@@ -1,5 +1,6 @@
 import User from "../auth/auth.model.js";
 import HealthProfile from "../health/health.model.js";
+import Medication from "../medication/medication.model.js";
 
 import ApiError from "../../core/errors/ApiError.js";
 
@@ -69,6 +70,12 @@ export const getDashboard = async (userId) => {
   },
 ]);
 
+const medicationsPending =
+await Medication.countDocuments({
+    user:user._id,
+    active:true,
+});
+
 const waterConsumed =
   waterToday.length > 0
     ? waterToday[0].total
@@ -98,7 +105,7 @@ const waterConsumed =
 
             waterConsumed,
 
-            medicationsPending: 0,
+            medicationsPending
         },
     };
 };
